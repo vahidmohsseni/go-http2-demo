@@ -29,7 +29,7 @@ func handle(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("HELLLLLLOOOOO!\n"))
 		counter := 0
 		for true {
-			if counter > 5 {
+			if counter > 30 {
 				break
 			}
 			counter += 1
