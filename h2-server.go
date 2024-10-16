@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 )
 
 func main() {
@@ -19,12 +20,23 @@ func main() {
 func handle(w http.ResponseWriter, r *http.Request) {
 	// Log the request protocol
 	log.Printf("Got connection: %s", r.Proto)
-
+	var wf = w.(interface{ Flush() })
 	// Handle 2nd request, must be before push to prevent recursive calls.
 	// Don't worry - Go protect us from recursive push by panicking.
 	if r.URL.Path == "/2nd" {
 		log.Println("Handling 2nd")
-		w.Write([]byte("Hello Again!"))
+		w.Write([]byte("Hello Again!\n"))
+		w.Write([]byte("HELLLLLLOOOOO!\n"))
+		counter := 0
+		for true {
+			if counter > 5 {
+				break
+			}
+			counter += 1
+			w.Write([]byte("HELLLLLLOOOOO!\n"))
+			wf.Flush()
+			time.Sleep(time.Second)
+		}
 		return
 	}
 
